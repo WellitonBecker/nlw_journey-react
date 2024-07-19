@@ -38,7 +38,7 @@ export default function Activities() {
               </span>
             </div>
             {activitiesDate.activities.length > 0 ? (
-              <div>
+              <div className="space-y-2.5">
                 {activitiesDate.activities.map((activity) => {
                   return (
                     <div key={activity.id} className="space-y-2.5">

@@ -3,6 +3,7 @@ import Button from "../components/button";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../lib/axios";
+import CreateInviteModal from "./create-invite-modal";
 
 interface Participant {
   id: string;
@@ -14,6 +15,7 @@ interface Participant {
 export default function Guests() {
   const { tripId } = useParams();
   const [participants, setParticipants] = useState<Participant[]>([]);
+  const [isCreateInviteModalOpen, setIsCreateInviteModalOpen] = useState(false);
 
   useEffect(() => {
     api
@@ -48,10 +50,19 @@ export default function Guests() {
           );
         })}
       </div>
-      <Button size="full" variant="secondary">
+      <Button
+        size="full"
+        variant="secondary"
+        onClick={() => setIsCreateInviteModalOpen(true)}
+      >
         <UserCog className="size-5" />
         Gerenciar convidados
       </Button>
+      {isCreateInviteModalOpen && (
+        <CreateInviteModal
+          closeCreateInviteModal={() => setIsCreateInviteModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

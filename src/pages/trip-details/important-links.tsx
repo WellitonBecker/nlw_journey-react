@@ -1,44 +1,74 @@
 import { Link2, Plus } from "lucide-react";
 import Button from "../components/button";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { api } from "../../lib/axios";
+import CreateLinkModal from "./create-link-modal";
+
+interface Link {
+  id: string;
+  title: string;
+  url: string;
+}
 
 export default function ImportantLinks() {
+  const { tripId } = useParams();
+  const [links, setLinks] = useState<Link[]>([]);
+  const [isCreateLinkModalOpen, setIsCreateLinkModalOpen] = useState(false);
+
+  useEffect(() => {
+    api
+      .get(`trips/${tripId}/links`)
+      .then((response) => setLinks(response.data.links));
+  }, [tripId]);
+
   return (
     <div className="space-y-6">
       <h2 className="font-semibold text-xl">Links importantes</h2>
       <div className="space-y-5">
-        <div className="flex items-center justify-between gap-4">
-          <div className="space-y-1.5 flex-1">
-            <span className="block font-medium text-zinc-100">
-              Reserva do AirBinB
+        {links.length > 0 ? (
+          links.map((link) => {
+            return (
+              <div
+                key={link.id}
+                className="flex items-center justify-between gap-4"
+              >
+                <div className="space-y-1.5 flex-1">
+                  <span className="block font-medium text-zinc-100">
+                    {link.title}
+                  </span>
+                  <a
+                    href={link.url}
+                    className="block font-xs text-zinc-400 truncate hover:text-zinc-200"
+                  >
+                    {link.url}
+                  </a>
+                </div>
+                <Link2 className="size-5 text-zinc-400" />
+              </div>
+            );
+          })
+        ) : (
+          <div className="text-center">
+            <span className="text-zinc-500 text-sm">
+              Nenhum link cadastrado!
             </span>
-            <a
-              href="https://www.airbnb.com.br/rooms/104700011"
-              className="block font-xs text-zinc-400 truncate hover:text-zinc-200"
-            >
-              https://www.airbnb.com.br/rooms/104700011
-            </a>
           </div>
-          <Link2 className="size-5 text-zinc-400" />
-        </div>
-        <div className="flex items-center justify-between gap-4">
-          <div className="space-y-1.5 flex-1">
-            <span className="block font-medium text-zinc-100">
-              Regras da casa
-            </span>
-            <a
-              href="https://www.notion.com/pages/1047000112354648336?adults=13&children=0&infants=0&pets=0&wishlist_item_id=11003621872995&check_in=2024-08-17&check_out=2024-08-26&source_impression_id=p3_1717600906_P3DL0E-bJZzguEci&previous_page_section_name=1000"
-              className="block font-xs text-zinc-400 truncate hover:text-zinc-200"
-            >
-              https://www.notion.com/pages/1047000112354648336?adults=13&children=0&infants=0&pets=0&wishlist_item_id=11003621872995&check_in=2024-08-17&check_out=2024-08-26&source_impression_id=p3_1717600906_P3DL0E-bJZzguEci&previous_page_section_name=1000
-            </a>
-          </div>
-          <Link2 className="size-5 text-zinc-400" />
-        </div>
+        )}
       </div>
-      <Button variant="secondary" size="full">
+      <Button
+        variant="secondary"
+        size="full"
+        onClick={() => setIsCreateLinkModalOpen(true)}
+      >
         <Plus className="size-5" />
         Cadastrar novo link
       </Button>
+      {isCreateLinkModalOpen && (
+        <CreateLinkModal
+          closeCreateActivityModel={() => setIsCreateLinkModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
