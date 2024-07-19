@@ -4,6 +4,7 @@ import Modal from "../components/modal";
 import HeaderModal from "../components/headerModal";
 import { useState } from "react";
 import { api } from "../../lib/axios";
+import { useNavigate } from "react-router-dom";
 import { DateRange, DayPicker } from "react-day-picker";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -19,14 +20,13 @@ interface Trip {
 interface UpdateTripModalProps {
   closeUpdateTripModal: () => void;
   trip: Trip;
-  setTrip: (trip: Trip) => void;
 }
 
 export default function UpdateTripModal({
   closeUpdateTripModal,
   trip,
-  setTrip,
 }: UpdateTripModalProps) {
+  const navigate = useNavigate();
   const [destination, setDestination] = useState(trip.destination);
   const [eventStartAndEndDates, setEventStartAndEndDates] = useState<
     DateRange | undefined
@@ -59,12 +59,8 @@ export default function UpdateTripModal({
       ends_at: eventStartAndEndDates.to,
     });
 
-    trip.destination = destination;
-    trip.starts_at = eventStartAndEndDates.from.toString();
-    trip.ends_at = eventStartAndEndDates.to.toString();
-
     closeUpdateTripModal();
-    setTrip(trip);
+    navigate(0);
   }
 
   return (

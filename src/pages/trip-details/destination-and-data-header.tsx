@@ -55,7 +55,6 @@ export default function DestinationAndDataHeader() {
         <UpdateTripModal
           closeUpdateTripModal={() => setIsUpdateTripModalOpen(false)}
           trip={trip}
-          setTrip={setTrip}
         />
       )}
     </div>
