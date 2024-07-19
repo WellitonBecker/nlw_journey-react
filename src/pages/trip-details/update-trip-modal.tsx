@@ -2,11 +2,11 @@ import { MapPin, Calendar } from "lucide-react";
 import Button from "../components/button";
 import Modal from "../components/modal";
 import HeaderModal from "../components/headerModal";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { api } from "../../lib/axios";
-import { useNavigate } from "react-router-dom";
 import { DateRange, DayPicker } from "react-day-picker";
 import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 interface Trip {
   id: string;
@@ -19,13 +19,14 @@ interface Trip {
 interface UpdateTripModalProps {
   closeUpdateTripModal: () => void;
   trip: Trip;
+  setTrip: (trip: Trip) => void;
 }
 
 export default function UpdateTripModal({
   closeUpdateTripModal,
   trip,
+  setTrip,
 }: UpdateTripModalProps) {
-  const navigate = useNavigate();
   const [destination, setDestination] = useState(trip.destination);
   const [eventStartAndEndDates, setEventStartAndEndDates] = useState<
     DateRange | undefined
@@ -37,14 +38,14 @@ export default function UpdateTripModal({
     eventStartAndEndDates &&
     eventStartAndEndDates.from &&
     eventStartAndEndDates.to
-      ? format(eventStartAndEndDates.from, "d' de 'LLL")
+      ? format(eventStartAndEndDates.from, "d' de 'LLL", { locale: ptBR })
           .concat(" até ")
-          .concat(format(eventStartAndEndDates.to, "d' de 'LLL"))
+          .concat(
+            format(eventStartAndEndDates.to, "d' de 'LLL", { locale: ptBR })
+          )
       : null;
 
-  async function createLink(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
+  async function updateTrip() {
     if (!destination) {
       return;
     }
@@ -58,8 +59,12 @@ export default function UpdateTripModal({
       ends_at: eventStartAndEndDates.to,
     });
 
+    trip.destination = destination;
+    trip.starts_at = eventStartAndEndDates.from.toString();
+    trip.ends_at = eventStartAndEndDates.to.toString();
+
     closeUpdateTripModal();
-    navigate(0);
+    setTrip(trip);
   }
 
   return (
@@ -69,7 +74,7 @@ export default function UpdateTripModal({
         titleModal="Alterar viagem"
       ></HeaderModal>
 
-      <form onSubmit={createLink} className="space-y-3">
+      <div className="space-y-3">
         <div className="h-14 px-4 bg-zinc-950 border border-zinc-800 rounded-lg flex items-center gap-2">
           <MapPin className="size-5 text-zinc-400" />
           <input
@@ -106,10 +111,10 @@ export default function UpdateTripModal({
           </Modal>
         )}
 
-        <Button type="submit" size="full">
+        <Button size="full" onClick={updateTrip}>
           Alterar viagem
         </Button>
-      </form>
+      </div>
     </Modal>
   );
 }

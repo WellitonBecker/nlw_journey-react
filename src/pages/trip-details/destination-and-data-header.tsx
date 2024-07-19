@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../lib/axios";
 import { format } from "date-fns";
 import UpdateTripModal from "./update-trip-modal";
+import { ptBR } from "date-fns/locale";
 
 interface Trip {
   id: string;
@@ -24,9 +25,9 @@ export default function DestinationAndDataHeader() {
   }, [tripId]);
 
   const displayedDate = trip
-    ? format(trip.starts_at, "d' de 'LLL")
+    ? format(trip.starts_at, "d' de 'LLL", { locale: ptBR })
         .concat(" até ")
-        .concat(format(trip.ends_at, "d' de 'LLL"))
+        .concat(format(trip.ends_at, "d' de 'LLL", { locale: ptBR }))
     : null;
 
   return (
@@ -54,6 +55,7 @@ export default function DestinationAndDataHeader() {
         <UpdateTripModal
           closeUpdateTripModal={() => setIsUpdateTripModalOpen(false)}
           trip={trip}
+          setTrip={setTrip}
         />
       )}
     </div>
