@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 interface HeaderModalProps {
   closeModal: () => void;
   titleModal: string;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 export default function HeaderModal({

@@ -1,4 +1,4 @@
-import { AtSign, User, X } from "lucide-react";
+import { AtSign, User } from "lucide-react";
 import { FormEvent } from "react";
 import Button from "../components/button";
 import HeaderModal from "../components/headerModal";
@@ -7,11 +7,15 @@ import Modal from "../components/modal";
 interface ConfirmTripModalOpenProps {
   closeConfirmTripModal: () => void;
   createTrip: (event: FormEvent<HTMLFormElement>) => void;
+  setOwnerName: (owner_name: string) => void;
+  setOwnerEmail: (owner_email: string) => void;
 }
 
 export default function ConfirmTripModalOpen({
   closeConfirmTripModal,
   createTrip,
+  setOwnerName,
+  setOwnerEmail,
 }: ConfirmTripModalOpenProps) {
   return (
     <Modal>
@@ -36,6 +40,7 @@ export default function ConfirmTripModalOpen({
             name="name"
             required
             placeholder="Seu nome completo"
+            onChange={(event) => setOwnerName(event.target.value)}
             className="bg-transparent text-lg placeholder-zinc-400 w-48  outline-none flex-1"
           />
         </div>
@@ -45,6 +50,7 @@ export default function ConfirmTripModalOpen({
             type="email"
             name="email"
             required
+            onChange={(event) => setOwnerEmail(event.target.value)}
             placeholder="Seu e-mail pessoal"
             className="bg-transparent text-lg placeholder-zinc-400 w-48  outline-none flex-1"
           />
